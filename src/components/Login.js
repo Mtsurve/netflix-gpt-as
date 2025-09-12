@@ -8,14 +8,14 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux'
-import { addUser, removeUser } from '../utils/userSlice'
+import { addUser } from '../utils/userSlice'
+import { Button } from 'tarmor';
+import { USER_AVATAR } from "../utils/constants";
 
 const Login = () => {
   const [isSignInForm, setIsSignForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const name = useRef("");
@@ -45,12 +45,11 @@ const Login = () => {
           const user = userCredential.user;
           
           updateProfile(user, {
-            displayName: name.current.value, photoURL: "https://avatars.githubusercontent.com/u/60686705?v=4&size=64"
+            displayName: name.current.value, photoURL: USER_AVATAR
           }).then(() => {
             const {uid,email, displayName,photoURL} = auth.currentUser;
             dispatch(addUser({uid,email, displayName,photoURL}));
             // Profile updated!
-          navigate("/browse");
           }).catch((error) => {
             // An error occurred
              setErrorMessage(error);
@@ -65,7 +64,6 @@ const Login = () => {
       signInWithEmailAndPassword(auth, email.current.value, password.current.value)
         .then((userCredential) => {
           const user = userCredential.user;
-          navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -98,28 +96,28 @@ const Login = () => {
             ref={name}
             type="text"
             placeholder="Full Name"
-            className="p-4 my-2 w-full bg-gray-700"
+            className="p-4 my-2 w-full bg-gray-700 rounded-md"
           />
         )}
         <input
           ref={email}
           type="text"
           placeholder="Email Address"
-          className="p-4 my-2 w-full bg-gray-700"
+          className="p-4 my-2 w-full bg-gray-700 rounded-md"
         />
         <input
           ref={password}
           type="password"
           placeholder="Password"
-          className="p-4 my-4 w-full bg-gray-700"
+          className="p-4 my-4 w-full bg-gray-700 rounded-md"
         />
         <p className="text-red-600 font-bold text-lg">{errorMessage}</p>
-        <button
+        <Button
           className="p-4 my-6 bg-red-700 w-full rounded-lg"
           onClick={handleButtonClick}
         >
           {isSignInForm ? "Sign In" : "Sign Up"}
-        </button>
+        </Button>
         <p className="py-4 cursor-pointer" onClick={toggleSignInForm}>
           {isSignInForm
             ? "New to Netflix? Sign Up Now."
